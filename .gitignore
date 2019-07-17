@@ -1,0 +1,11 @@
+*.xcuserdatad
+*.xcuserstate
+xcuserdata
+xcuserdata/*
+*.swp
+.idea
+.DS_Store
+node_modules
+notes.txt
+/build
+/node-ios-hello/Info.plist
