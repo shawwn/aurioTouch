@@ -9,7 +9,9 @@
  */
 
 #import <QuartzCore/QuartzCore.h>
+#if !TARGET_OS_UIKITFORMAC
 #import <OpenGLES/EAGLDrawable.h>
+#endif
 
 #import "EAGLView.h"
 #import "BufferManager.h"
@@ -48,6 +50,11 @@ typedef enum aurioTouchDisplayMode {
 	aurioTouchDisplayModeSpectrum
 } aurioTouchDisplayMode;
 
+#if TARGET_OS_UIKITFORMAC
+typedef id<MTLDevice> SystemContext;
+#else
+typedef EAGLContext* SystemContext;
+#endif
 
 
 @interface EAGLView () {
@@ -56,7 +63,7 @@ typedef enum aurioTouchDisplayMode {
 	GLint backingWidth;
 	GLint backingHeight;
 	
-	EAGLContext *context;
+	SystemContext context;
 	
 	/* OpenGL names for the renderbuffer and framebuffers used to render to this view */
 	GLuint viewRenderbuffer, viewFramebuffer;
@@ -103,6 +110,11 @@ typedef enum aurioTouchDisplayMode {
 
 @end
 
+#if TARGET_OS_UIKITFORMAC
+#define SystemLayer CAMetalLayer
+#else
+#define SystemLayer CAEAGLLayer
+#endif
 @implementation EAGLView
 
 @synthesize applicationResignedActive;
@@ -110,7 +122,7 @@ typedef enum aurioTouchDisplayMode {
 // You must implement this
 + (Class) layerClass
 {
-	return [CAEAGLLayer class];
+  return [SystemLayer class];
 }
 
 //The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
@@ -119,7 +131,8 @@ typedef enum aurioTouchDisplayMode {
 	if((self = [super initWithCoder:coder])) {
     
         self.frame = [[UIScreen mainScreen] bounds];
-        
+
+#if !TARGET_OS_UIKITFORMAC
 		// Get the layer
 		CAEAGLLayer *eaglLayer = (CAEAGLLayer*) self.layer;
 		
@@ -138,6 +151,7 @@ typedef enum aurioTouchDisplayMode {
 			[self release];
 			return nil;
 		}
+#endif
         
         // Enable multi touch so we can handle pinch and zoom in the oscilloscope
         self.multipleTouchEnabled = YES;
@@ -152,7 +166,13 @@ typedef enum aurioTouchDisplayMode {
 		[self setupView];
 		[self drawView];
         
+        #if TARGET_OS_UIKITFORMAC
+        displayMode = aurioTouchDisplayModeOscilloscopeFFT;
+        BufferManager* bufferManager = [audioController getBufferManagerInstance];
+        bufferManager->SetDisplayMode(displayMode);
+        #else
         displayMode = aurioTouchDisplayModeOscilloscopeWaveform;
+        #endif
         
         // Set up our overlay view that pops up when we are pinching/zooming the oscilloscope
         UIImage *img_ui = nil;
@@ -215,7 +235,9 @@ typedef enum aurioTouchDisplayMode {
 
 - (void)layoutSubviews
 {
+#if !TARGET_OS_UIKITFORMAC
 	[EAGLContext setCurrentContext:context];
+#endif
 	[self destroyFramebuffer];
 	[self createFramebuffer];
 	[self drawView];
@@ -223,6 +245,7 @@ typedef enum aurioTouchDisplayMode {
 
 - (BOOL)createFramebuffer
 {
+#if !TARGET_OS_UIKITFORMAC
 	glGenFramebuffersOES(1, &viewFramebuffer);
 	glGenRenderbuffersOES(1, &viewRenderbuffer);
 	
@@ -246,19 +269,26 @@ typedef enum aurioTouchDisplayMode {
 		return NO;
 	}
 	
+#endif
 	return YES;
 }
 
 
 - (void)destroyFramebuffer
 {
+#if !TARGET_OS_UIKITFORMAC
 	glDeleteFramebuffersOES(1, &viewFramebuffer);
+#endif
 	viewFramebuffer = 0;
+#if !TARGET_OS_UIKITFORMAC
 	glDeleteRenderbuffersOES(1, &viewRenderbuffer);
+#endif
 	viewRenderbuffer = 0;
 	
 	if(depthRenderbuffer) {
+#if !TARGET_OS_UIKITFORMAC
 		glDeleteRenderbuffersOES(1, &depthRenderbuffer);
+#endif
 		depthRenderbuffer = 0;
 	}
 }
@@ -293,6 +323,7 @@ typedef enum aurioTouchDisplayMode {
 
 - (void)setupView
 {
+#if !TARGET_OS_UIKITFORMAC
 	// Sets up matrices and transforms for OpenGL ES
 	glViewport(0, 0, backingWidth, backingHeight);
 	glMatrixMode(GL_PROJECTION);
@@ -304,7 +335,7 @@ typedef enum aurioTouchDisplayMode {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	
+#endif
 }
 
 
@@ -315,15 +346,19 @@ typedef enum aurioTouchDisplayMode {
     // so just make sure and not draw if we're resigning active
     if (self.applicationResignedActive) return;
     
+#if !TARGET_OS_UIKITFORMAC
 	// Make sure that you are drawing to the current context
 	[EAGLContext setCurrentContext:context];
 	
 	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
-	
+#endif
+
 	[self drawView:self forTime:([NSDate timeIntervalSinceReferenceDate] - animationStarted)];
 	
+#if !TARGET_OS_UIKITFORMAC
 	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+#endif
 }
 
 
@@ -361,15 +396,18 @@ typedef enum aurioTouchDisplayMode {
 	bzero(texBitBuffer, sizeof(UInt32) * 512);
 	SpectrumLinkedTexture *curTex;
 	
+#if !TARGET_OS_UIKITFORMAC
 	for (curTex = firstTex; curTex; curTex = curTex->nextTex)
 	{
 		glBindTexture(GL_TEXTURE_2D, curTex->texName);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBitBuffer);
 	}
+#endif
 }
 
 - (void)setupViewForSpectrum
 {
+#if !TARGET_OS_UIKITFORMAC
 	glClearColor(0., 0., 0., 0.);
 	
 	spectrumRect = CGRectMake(10., 10., 460., 300.);
@@ -422,10 +460,12 @@ typedef enum aurioTouchDisplayMode {
 	initted_spectrum = YES;
 	
 	free(texNames);
+#endif 
 }
 
 - (void)drawOscilloscope
 {
+#if !TARGET_OS_UIKITFORMAC
 	// Clear the view
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -504,6 +544,7 @@ typedef enum aurioTouchDisplayMode {
 		glPopMatrix();
 		
 	}
+#endif
 	
     BufferManager* bufferManager = [audioController getBufferManagerInstance];
     Float32** drawBuffers = bufferManager->GetDrawBuffers();
@@ -516,8 +557,15 @@ typedef enum aurioTouchDisplayMode {
 			int y, maxY;
 			maxY = bufferManager->GetCurrentDrawBufferLength();
             int fftLength = bufferManager->GetFFTOutputBufferLength();
+      printf("\n\n");
+      printf("-----------------------------------------------\n");
+      fflush(stdout);
 			for (y=0; y<maxY; y++)
 			{
+        if (y % (16*16) == 0) {
+          printf("\n");
+          fflush(stdout);
+        }
 				CGFloat yFract = (CGFloat)y / (CGFloat)(maxY - 1);
 				CGFloat fftIdx = yFract * ((CGFloat)fftLength - 1);
 				
@@ -536,11 +584,16 @@ typedef enum aurioTouchDisplayMode {
 				interpVal = fft_l_fl * (1. - fftIdx_f) + fft_r_fl * fftIdx_f;
 				
 				drawBuffers[0][y] = CLAMP(0., interpVal, 1.);
+        if (y % 16 == 0) {
+          printf("%0.04f ", (float)drawBuffers[0][y]);    
+        }
 			}
+      fflush(stdout);
 			[self cycleOscilloscopeLines];
 		}
 	}
 	
+#if !TARGET_OS_UIKITFORMAC
 	GLfloat *oscilLine_ptr;
 	GLfloat max = kDefaultDrawSamples; //bufferManager->GetCurrentDrawBufferLength();
 	Float32 *drawBuffer_ptr;
@@ -591,6 +644,7 @@ typedef enum aurioTouchDisplayMode {
 	}
 	glPopMatrix();
 	glPopMatrix();
+#endif
 }
 
 - (void)cycleSpectrum
@@ -680,12 +734,15 @@ double linearInterp(double valA, double valB, double fract)
 		*texBitBuffer_ptr++ = newPx;
 	}
 	
+#if !TARGET_OS_UIKITFORMAC
 	glBindTexture(GL_TEXTURE_2D, firstTex->texName);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBitBuffer);
+#endif 
 }
 
 - (void)drawSpectrum
 {
+#if !TARGET_OS_UIKITFORMAC
 	// Clear the view
 	glClear(GL_COLOR_BUFFER_BIT);
 	   
@@ -739,7 +796,7 @@ double linearInterp(double valA, double valB, double fract)
 	glPopMatrix();
 	
 	glFlush();
-	
+#endif
 }
 
 
@@ -850,6 +907,7 @@ CGPathRef CreateRoundedRectPath(CGRect RECT, CGFloat cornerRadius)
 
 - (void)createGLTexture:(GLuint *)texName fromCGImage:(CGImageRef)img
 {
+#if !TARGET_OS_UIKITFORMAC
 	GLubyte *spriteData = NULL;
 	CGContextRef spriteContext;
 	size_t imgW, imgH, texW, texH;
@@ -893,6 +951,7 @@ CGPathRef CreateRoundedRectPath(CGRect RECT, CGFloat cornerRadius)
 	glEnable(GL_BLEND);
 	
 	free(spriteData);
+#endif
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -952,11 +1011,13 @@ CGPathRef CreateRoundedRectPath(CGRect RECT, CGFloat cornerRadius)
 {
 	[self stopAnimation];
 	
+#if !TARGET_OS_UIKITFORMAC
 	if([EAGLContext currentContext] == context) {
 		[EAGLContext setCurrentContext:nil];
 	}
 	
 	[context release];
+#endif
 	context = nil;
     
     free(oscilLine);

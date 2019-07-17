@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -20,9 +20,11 @@
 		82DDBB4F17E3D74A00AA85C2 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82DDBB4E17E3D74A00AA85C2 /* AudioController.mm */; };
 		82DDBB5B17E8BD9700AA85C2 /* BufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82DDBB5917E8BD9700AA85C2 /* BufferManager.cpp */; };
 		82DDBB5E17E9009F00AA85C2 /* FFTHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82DDBB5C17E9009F00AA85C2 /* FFTHelper.cpp */; };
+		A156283D22DF04C200969CF7 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A156283B22DF04C200969CF7 /* Metal.framework */; };
+		A156283F22DF04C200969CF7 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A156283C22DF04C200969CF7 /* MetalKit.framework */; };
 		A15CFB1D0DE4A8C600FB5D08 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A15CFB1C0DE4A8C600FB5D08 /* icon.png */; };
 		A16C46DE0DE37EC400F4A0B3 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16C46DC0DE37EC400F4A0B3 /* EAGLView.mm */; };
-		A16C47120DE37F9E00F4A0B3 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A16C47110DE37F9E00F4A0B3 /* OpenGLES.framework */; };
+		A16C47120DE37F9E00F4A0B3 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A16C47110DE37F9E00F4A0B3 /* OpenGLES.framework */; platformFilter = ios; };
 		A16C473F0DE3801700F4A0B3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A16C473E0DE3801700F4A0B3 /* QuartzCore.framework */; };
 		A16C48360DE389CB00F4A0B3 /* oscilloscope.png in Resources */ = {isa = PBXBuildFile; fileRef = A16C48350DE389CB00F4A0B3 /* oscilloscope.png */; };
 		F74ADD190DDA24AA0046BEC2 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F74ADD0F0DDA24AA0046BEC2 /* CADebugMacros.cpp */; };
@@ -60,6 +62,9 @@
 		82DDBB5C17E9009F00AA85C2 /* FFTHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFTHelper.cpp; sourceTree = "<group>"; };
 		82DDBB5D17E9009F00AA85C2 /* FFTHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTHelper.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
+		A156283A22DF017100969CF7 /* aurioTouch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = aurioTouch.entitlements; sourceTree = "<group>"; };
+		A156283B22DF04C200969CF7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.0.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		A156283C22DF04C200969CF7 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.0.sdk/System/Library/Frameworks/MetalKit.framework; sourceTree = DEVELOPER_DIR; };
 		A15CFB1C0DE4A8C600FB5D08 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		A16C46DC0DE37EC400F4A0B3 /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAGLView.mm; path = Classes/EAGLView.mm; sourceTree = SOURCE_ROOT; };
 		A16C46DD0DE37EC400F4A0B3 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAGLView.h; path = Classes/EAGLView.h; sourceTree = SOURCE_ROOT; };
@@ -88,7 +93,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B71304718EB80A800DA9374 /* AVFoundation.framework in Frameworks */,
+				A156283D22DF04C200969CF7 /* Metal.framework in Frameworks */,
 				8250CD57145B602D00806437 /* Accelerate.framework in Frameworks */,
+				A156283F22DF04C200969CF7 /* MetalKit.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				1D3623EC0D0F72F000981E51 /* CoreGraphics.framework in Frameworks */,
@@ -131,6 +138,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				A156283A22DF017100969CF7 /* aurioTouch.entitlements */,
 				2B869E111D51590F00995BDC /* ReadMe.md */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -166,6 +174,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A156283B22DF04C200969CF7 /* Metal.framework */,
+				A156283C22DF04C200969CF7 /* MetalKit.framework */,
 				2B71304618EB80A800DA9374 /* AVFoundation.framework */,
 				8250CD56145B602D00806437 /* Accelerate.framework */,
 				A16C473E0DE3801700F4A0B3 /* QuartzCore.framework */,
@@ -324,7 +334,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = aurioTouch.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 4GK9M255PQ;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -332,9 +345,14 @@
 				GCC_PREFIX_HEADER = aurioTouch_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.emilykolar.example.apple-sample.aurioTouch";
 				PRODUCT_NAME = aurioTouch;
 				SDKROOT = iphoneos;
+				SUPPORTS_UIKITFORMAC = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -343,15 +361,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = aurioTouch.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = YES;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 4GK9M255PQ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = aurioTouch_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.emilykolar.example.apple-sample.aurioTouch";
 				PRODUCT_NAME = aurioTouch;
 				SDKROOT = iphoneos;
+				SUPPORTS_UIKITFORMAC = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
